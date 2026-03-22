@@ -28,6 +28,9 @@ WORKDIR /app
 # 复制编译阶段生成的依赖文件（只复制生产依赖，减少体积）
 COPY --from=builder /app/package*.json /app/pnpm-*.yaml ./
 
+# 安装 pnpm
+RUN npm install -g pnpm
+
 # 安装项目依赖
 RUN pnpm install --only=production
 
