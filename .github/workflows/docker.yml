@@ -13,28 +13,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. 登录 Docker 镜像仓库（以 Docker Hub 为例）
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      # 2. 登录阿里云容器镜像服务（ACR）
+      - name: Login to Alibaba Cloud ACR
+        uses: aliyun/acr-login@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}  # GitHub 密钥里的用户名
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}     # GitHub 密钥里的令牌
+          login-server: ${{ secrets.ALIYUN_REGISTRY_SERVER }}
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
 
       # 3. 设置日期和 SHA
       - name: Set tags
         id: tags
         run: echo "sha=${GITHUB_SHA:0:10}" >> $GITHUB_OUTPUT && echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
 
-      # 4. 构建并推送 Docker 镜像
+      # 4. 构建并推送 Docker 镜像到阿里云 ACR
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            lihaichao110/agentflow:latest
-            lihaichao110/agentflow:${{ steps.tags.outputs.sha }}-${{ steps.tags.outputs.date }}
-          
+          tags: ${{ secrets.ALIYUN_REGISTRY_SERVER }}/${{ secrets.ALIYUN_NAMESPACE }}/agentflow:${{ steps.tags.outputs.sha }}-${{ steps.tags.outputs.date }}
+            
       # k8s 还没配置
       # 4. 配置 kubectl（连接 K8s 集群）
       # - name: Set up kubectl
