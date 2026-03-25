@@ -41,6 +41,8 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # 登录阿里云镜像仓库
+            docker login --username=${{ secrets.ALIYUN_REGISTRY_USERNAME }} --password=${{ secrets.ALIYUN_REGISTRY_PASSWORD }} ${{ secrets.ALIYUN_REGISTRY_SERVER }}
             cd /docker
             docker compose pull
             docker compose up -d --force-recreate
