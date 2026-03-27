@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DemoModule } from './demo/demo.module';
-import { UserModule } from './user/user.module';
+import { DemoModule } from './modules/demo/demo.module';
+import { UserModule } from './modules/user/user.module';
+import appConfig from './config/configuration';
 
 @Module({
-  imports: [DemoModule, UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // 全局注册，其他模块无需再引入
+      load: [appConfig],
+    }),
+    DemoModule,
+    UserModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

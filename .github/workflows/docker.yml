@@ -46,18 +46,3 @@ jobs:
             cd /docker
             docker compose pull
             docker compose up -d --force-recreate
-            
-      # k8s 还没配置
-      # 4. 配置 kubectl（连接 K8s 集群）
-      # - name: Set up kubectl
-      #   uses: azure/setup-kubectl@v3
-
-      # - name: Configure K8s cluster
-      #   run: |
-      #     echo "${{ secrets.K8S_CONFIG }}" > ~/.kube/config  # 从 GitHub 密钥读取 K8s 配置
-
-      # 5. 通知 K8s 更新镜像
-      # - name: Deploy to K8s
-      #   run: |
-      #     kubectl set image deployment/nest-app nest-app=your-docker-username/nest-app:latest
-      #     kubectl rollout status deployment/nest-app  # 检查更新状态
