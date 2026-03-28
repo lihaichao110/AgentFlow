@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getServiceStatus(): string {
+    const filePath = path.join(__dirname, 'assets', 'success.html');
+    return fs.readFileSync(filePath, 'utf-8');
   }
 }

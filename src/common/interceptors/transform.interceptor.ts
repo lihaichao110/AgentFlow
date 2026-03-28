@@ -25,12 +25,12 @@ export interface Response<T> {
  */
 @Injectable()
 export class TransformInterceptor<T>
-  implements NestInterceptor<T, Response<T>>
+  implements NestInterceptor<T, Response<T> | string>
 {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response<T>> {
+  ): Observable<Response<T> | string> {
     // TODO: 实现真实的拦截逻辑
     // 1. 请求前记录日志（开始时间等）
     // 2. 在 handle() 之后处理响应
@@ -48,11 +48,16 @@ export class TransformInterceptor<T>
           `[${new Date().toISOString()}] ${request.method} ${request.url} - 耗时: ${Date.now() - now}ms`,
         );
 
+        // 如果是 HTML 响应（字符串且以 < 开头），直接返回不进行包装
+        if (typeof data === 'string' && data.trim().startsWith('<')) {
+          return data;
+        }
+
         return {
           code: 0,
           message: 'success',
           data,
-        };
+        } as Response<T>;
       }),
     );
   }
