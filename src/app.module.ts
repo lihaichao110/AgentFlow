@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DemoModule } from './modules/demo/demo.module';
 import { UserModule } from './modules/user/user.module';
+import { AgentModule } from './modules/agent/agent.module';
 import appConfig from './config/configuration';
 
 @Module({
@@ -14,6 +15,7 @@ import appConfig from './config/configuration';
     }),
     DemoModule,
     UserModule,
+    AgentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

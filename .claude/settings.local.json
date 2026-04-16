@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add:*)",
+      "Bash(pnpm generate:*)",
+      "mcp__MiniMax__web_search",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm start:dev)",
+      "Bash(pnpm build:*)",
+      "Bash(grep -r \"MINIMAX_API_KEY\\\\|MINIMAX_BASE_URL\" .env*)"
+    ]
+  }
+}
