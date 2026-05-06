@@ -1,0 +1,387 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api": {
+      "get": {
+        "operationId": "AppController_getServiceStatus",
+        "summary": "获取服务状态页面",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "返回服务状态 HTML",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "<html>...</html>"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/api/demo": {
+      "get": {
+        "operationId": "DemoController_getHello",
+        "summary": "Demo 手写响应示例",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "手写 Express Response 返回字符串示例",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "123"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Demo"
+        ]
+      }
+    },
+    "/api/v1/user": {
+      "post": {
+        "operationId": "UserController_create",
+        "summary": "创建用户示例",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "返回创建用户的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action adds a new user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      },
+      "get": {
+        "operationId": "UserController_findAll",
+        "summary": "查询用户列表示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "示例查询参数",
+            "schema": {
+              "example": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回用户列表的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action returns all user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/{id}": {
+      "get": {
+        "operationId": "UserController_findOne",
+        "summary": "查询单个用户示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "用户 ID",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回单个用户的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action returns a #1 user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      },
+      "patch": {
+        "operationId": "UserController_update",
+        "summary": "更新用户示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "用户 ID",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回更新用户的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action updates a #1 user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      },
+      "delete": {
+        "operationId": "UserController_remove",
+        "summary": "删除用户示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "用户 ID",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回删除用户的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action removes a #1 user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/agent": {
+      "post": {
+        "operationId": "AgentController_create",
+        "summary": "创建 Agent 示例",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "返回创建 Agent 的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action adds a new agent"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      },
+      "get": {
+        "operationId": "AgentController_findAll",
+        "summary": "流式运行 Agent 示例",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "以 text/event-stream 返回模型流式输出",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"content\":\"stream chunk\"}"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      }
+    },
+    "/api/agent/{id}": {
+      "get": {
+        "operationId": "AgentController_findOne",
+        "summary": "运行单个 Agent 示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回 LangChain Agent 执行结果"
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      },
+      "patch": {
+        "operationId": "AgentController_update",
+        "summary": "更新 Agent 示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回更新 Agent 的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action updates a #1 agent"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      },
+      "delete": {
+        "operationId": "AgentController_remove",
+        "summary": "删除 Agent 示例",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Agent ID",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回删除 Agent 的示例文案",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": "This action removes a #1 agent"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "AgentFlow API",
+    "description": "AgentFlow 后端接口文档",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}

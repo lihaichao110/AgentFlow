@@ -4,8 +4,8 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-} from '@nestjs/common';
-import { Response } from 'express';
+} from "@nestjs/common";
+import { Response } from "express";
 
 /**
  * 全局异常过滤器 - 统一处理所有未捕获的异常
@@ -29,29 +29,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // 4. 根据环境决定是否返回详细错误信息
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = '服务器内部错误';
-    let error = 'Internal Server Error';
+    let message = "服务器内部错误";
+    let error = "Internal Server Error";
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
       message =
-        typeof exceptionResponse === 'string'
+        typeof exceptionResponse === "string"
           ? exceptionResponse
           : (exceptionResponse as any).message || exception.message;
       error =
-        typeof exceptionResponse === 'string'
+        typeof exceptionResponse === "string"
           ? exceptionResponse
           : (exceptionResponse as any).error || exception.name;
     }
 
     // 生产环境不返回详细错误信息
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV === "production";
 
     response.status(status).json({
       code: status,
       message: message,
-      error: isProduction ? error : exception instanceof Error ? exception.message : String(exception),
+      error: isProduction
+        ? error
+        : exception instanceof Error
+          ? exception.message
+          : String(exception),
       timestamp: new Date().toISOString(),
       // stack: isProduction ? undefined : exception instanceof Error ? exception.stack : undefined,
     });

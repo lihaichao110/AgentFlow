@@ -17,6 +17,10 @@
 
 AgentFlow 是一个基于 **NestJS + LangChain** 构建的 AI Agent 开发框架，专为构建智能代理应用而设计。通过 LangChain 的强大能力，AgentFlow 支持多种类型的 AI Agent 开发，包括工具调用代理、对话代理、多步骤推理代理等。框架提供模块化的架构设计，让开发者能够快速构建、部署和管理生产级别的 AI Agent 应用。
 
+## AI 文档
+
+为了让 AI 助手更快理解当前项目结构、运行方式和代码约定，项目新增了 [AGENTS.md](./AGENTS.md) 和 `docs` 规范文档。让 AI 参与开发前，建议先阅读 `AGENTS.md`，再按任务类型阅读 `docs/ARCHITECTURE.md`、`docs/FRONTEND.md`、`docs/SECURITY.md`。
+
 ## 核心特性
 
 ### 🤖 多类型 Agent 支持

@@ -1,5 +1,5 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
+import { Observable } from "rxjs";
 
 /**
  * 认证守卫 - 用于验证请求是否合法
