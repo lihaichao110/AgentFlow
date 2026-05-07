@@ -1,5 +1,5 @@
-# 使用 node:22-alpine 作为基础镜像 并命名为 builder
-FROM node:22-alpine as builder
+# 使用 node:22 作为基础镜像 并命名为 builder
+FROM node:22 as builder
 
 # 设置工作目录
 WORKDIR /app
@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm build
 
 # 第二阶段
-FROM node:22-alpine as runner
+FROM node:22 as runner
 
 # 设置工作目录
 WORKDIR /app
