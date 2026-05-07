@@ -4,6 +4,7 @@
   "description": "基于 NestJS + LangChain 的 AI Agent 开发框架",
   "author": "",
   "private": true,
+  "packageManager": "pnpm@9.14.2",
   "license": "MIT",
   "scripts": {
     "build": "nest build",

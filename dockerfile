@@ -4,14 +4,16 @@ FROM node:22-alpine AS builder
 # 设置工作目录
 WORKDIR /app
 
+ARG PNPM_VERSION=9.14.2
+
 # 复制项目依赖文件到容器的 工作 目录
-COPY package.json pnpm-*.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # 安装 pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 # 安装项目依赖
-RUN pnpm install --registry=https://registry.npmmirror.com
+RUN pnpm install --frozen-lockfile --registry=https://registry.npmmirror.com
 
 # 复制项目所有代码到容器的 工作 目录
 COPY . .
@@ -25,14 +27,16 @@ FROM node:22-alpine AS runner
 # 设置工作目录
 WORKDIR /app
 
+ARG PNPM_VERSION=9.14.2
+
 # 复制编译阶段生成的依赖文件（只复制生产依赖，减少体积）
-COPY --from=builder /app/package*.json /app/pnpm-*.yaml ./
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
 
 # 安装 pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 # 安装项目依赖
-RUN pnpm install --prod --registry=https://registry.npmmirror.com
+RUN pnpm install --prod --frozen-lockfile --registry=https://registry.npmmirror.com
 
 # 复制编译阶段生成的 dist 目录
 COPY --from=builder /app/dist ./dist
