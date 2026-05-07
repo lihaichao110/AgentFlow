@@ -1,5 +1,5 @@
-# 使用 node:22 作为基础镜像 并命名为 builder
-FROM node:22 as builder
+# 使用 node:22-alpine 作为基础镜像 并命名为 builder
+FROM node:22-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY package.json pnpm-*.yaml ./
 RUN npm install -g pnpm
 
 # 安装项目依赖
-RUN pnpm install
+RUN pnpm install --registry=https://registry.npmmirror.com
 
 # 复制项目所有代码到容器的 工作 目录
 COPY . .
@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm build
 
 # 第二阶段
-FROM node:22 as runner
+FROM node:22-alpine AS runner
 
 # 设置工作目录
 WORKDIR /app
@@ -32,7 +32,7 @@ COPY --from=builder /app/package*.json /app/pnpm-*.yaml ./
 RUN npm install -g pnpm
 
 # 安装项目依赖
-RUN pnpm install --only=production
+RUN pnpm install --prod --registry=https://registry.npmmirror.com
 
 # 复制编译阶段生成的 dist 目录
 COPY --from=builder /app/dist ./dist
