@@ -1,25 +1,66 @@
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
-import { Observable } from "rxjs";
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService, TokenExpiredError } from "@nestjs/jwt";
+import { Reflector } from "@nestjs/core";
+import { IS_PUBLIC_KEY } from "../decorators/public.decorator";
 
 /**
  * 认证守卫 - 用于验证请求是否合法
- * 当前实现：直接返回 true，放行所有请求
  *
  * 使用场景：
- * - 需要添加 JWT 验证时，在这里解析 token 并校验
- * - 需要添加 API Key 验证时，在这里校验 header
+ * - 解析 Authorization Bearer token 并校验 JWT
+ * - 将校验通过后的用户信息挂载到 request.user
+ * - 通过 @Public() 放行登录、健康检查等公开接口
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    // TODO: 实现真实的认证逻辑
-    // 1. 从 context 获取请求信息（headers, body, query）
-    // 2. 解析并验证 token / API Key
-    // 3. 将用户信息挂载到 request 对象上
-    // 4. 返回 true 允许访问，false 拒绝访问
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    return true;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromHeader(request.headers?.authorization);
+
+    if (!token) {
+      throw this.createUnauthorizedException("未登录");
+    }
+
+    try {
+      request.user = await this.jwtService.verifyAsync(token);
+      return true;
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw this.createUnauthorizedException("登录已过期");
+      }
+
+      throw this.createUnauthorizedException("登录状态无效");
+    }
+  }
+
+  private extractTokenFromHeader(authorization?: string): string | undefined {
+    const [type, token] = authorization?.split(" ") ?? [];
+    return type === "Bearer" && token ? token : undefined;
+  }
+
+  private createUnauthorizedException(message: string): UnauthorizedException {
+    return new UnauthorizedException({
+      message,
+      error: message,
+    });
   }
 }

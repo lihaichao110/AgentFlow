@@ -117,6 +117,44 @@
         ]
       }
     },
+    "/api/v1/user/login": {
+      "post": {
+        "operationId": "UserController_login",
+        "summary": "手机号验证码登录",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功后返回客户端 token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 0,
+                    "message": "success",
+                    "data": {
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxx.yyyyy"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/user/{id}": {
       "get": {
         "operationId": "UserController_findOne",
@@ -381,6 +419,25 @@
       "CreateUserDto": {
         "type": "object",
         "properties": {}
+      },
+      "LoginUserDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "手机号",
+            "example": "13800138000"
+          },
+          "code": {
+            "type": "string",
+            "description": "4 位短信验证码，当前临时验证码固定为 1234",
+            "example": "1234"
+          }
+        },
+        "required": [
+          "phone",
+          "code"
+        ]
       }
     }
   }

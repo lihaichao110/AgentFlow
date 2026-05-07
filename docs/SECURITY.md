@@ -4,9 +4,11 @@
 
 ## 当前安全状态
 
-- `AuthGuard` 当前直接返回 `true`，没有真实鉴权。
+- `AuthGuard` 当前作为全局 JWT 鉴权入口，默认保护所有未标记 `@Public()` 的接口。
+- 用户模块当前包含手机号验证码登录接口，验证码固定为 `1234`，登录成功返回 JWT token；JWT 密钥来自 `JWT_SECRET`，默认有效期来自 `JWT_EXPIRES_IN` 或 `1d`。
 - `express-session` 已启用，默认 cookie 名称来自 `SESSION_NAME`，默认 `lhc.sid`。
 - `SESSION_SECRET` 有默认值，但生产环境必须显式配置强密钥。
+- `JWT_SECRET` 有默认值，但生产环境必须显式配置强密钥。
 - DTO 当前大多为空，真实接口的输入校验还不完整。
 - `AgentService` 中存在直接读取 `process.env.ANTHROPIC_MODAL` 的实验代码。
 
@@ -26,6 +28,7 @@
 
 - 新增需要用户身份的接口时，不能依赖当前空实现 `AuthGuard`。
 - 引入 JWT、API Key 或 Session 鉴权时，必须明确 token 来源、过期策略和错误响应。
+- JWT 来源固定为 `Authorization: Bearer <token>`；token 过期统一返回 `401` 和 `登录已过期`。
 - 不允许在日志中打印完整 token、cookie、session、API Key。
 - 修改 session 配置时必须考虑 cookie 的 `httpOnly`、`secure`、`sameSite`。
 
@@ -76,4 +79,3 @@
 - 新增 webhook、回调地址或外部集成
 - 修改异常过滤器、响应拦截器或日志逻辑
 - 修改环境变量、部署配置或 Docker 配置
-

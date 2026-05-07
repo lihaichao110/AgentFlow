@@ -38,6 +38,8 @@ README 中提到的 `chat`、`memory`、`tools/base.tool.ts`、`tools/file.tool.
 根模块是 `src/app.module.ts`。当前导入：
 
 - `ConfigModule.forRoot({ isGlobal: true, load: [appConfig] })`
+- 全局 `JwtModule`
+- 全局 `AuthGuard`
 - `DemoModule`
 - `UserModule`
 - `AgentModule`
@@ -68,6 +70,7 @@ main -> app.module/common/config
 
 ```text
 HTTP request
+  -> AuthGuard
   -> controller
   -> service
   -> TransformInterceptor
@@ -156,6 +159,7 @@ openapi/agentflow.openapi.json
 
 - 只能放通用能力。
 - 不允许引用 `src/modules/*`。
+- `AuthGuard` 是全局 JWT 鉴权入口；公开接口必须使用 `@Public()` 显式放行。
 
 ### Config
 
@@ -195,7 +199,7 @@ openapi/agentflow.openapi.json
 - `src/modules/user/dto/*`
 - `src/modules/user/entities/*`
 
-职责：用户模块 scaffold。当前没有持久化，DTO 和 entity 为空。
+职责：用户模块 scaffold。当前没有持久化；已包含手机号验证码登录接口，验证码固定为 `1234`，登录成功返回客户端 JWT token。
 
 路由使用版本声明：
 
@@ -211,7 +215,8 @@ openapi/agentflow.openapi.json
 限制：
 
 - 当前没有数据库或 ORM，不要假设用户数据可持久化。
-- DTO 和 entity 目前为空，新增真实接口前必须补充输入校验。
+- 登录 token 当前为 JWT，默认有效期为 `JWT_EXPIRES_IN` 或 `1d`；由于当前没有数据库，payload 使用手机号作为 `sub`。
+- 新增真实接口前必须补充输入校验。
 
 ### Agent
 

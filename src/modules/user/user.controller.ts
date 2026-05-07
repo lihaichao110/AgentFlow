@@ -1,11 +1,12 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Post,
   Patch,
   Param,
-  Delete,
   Request,
 } from "@nestjs/common";
 import {
@@ -18,6 +19,8 @@ import {
 } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { LoginUserDto } from "./dto/login-user.dto";
+import { Public } from "../../common/decorators/public.decorator";
 
 @ApiTags("User")
 @Controller({
@@ -47,6 +50,28 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Post("login")
+  @Public()
+  @HttpCode(200)
+  @ApiOperation({ summary: "手机号验证码登录" })
+  @ApiBody({ type: LoginUserDto })
+  @ApiResponse({
+    status: 200,
+    description: "登录成功后返回客户端 token",
+    schema: {
+      example: {
+        code: 0,
+        message: "success",
+        data: {
+          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxx.yyyyy",
+        },
+      },
+    },
+  })
+  login(@Body() loginUserDto: LoginUserDto) {
+    return this.userService.login(loginUserDto);
+  }
+
   @Get()
   @ApiOperation({ summary: "查询用户列表示例" })
   @ApiQuery({
@@ -67,7 +92,6 @@ export class UserController {
     },
   })
   findAll(@Request() req) {
-    console.log(req, "req");
     return this.userService.findAll(req);
   }
 
