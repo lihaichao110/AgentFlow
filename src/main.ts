@@ -11,7 +11,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // 全局前缀
-  const prefix = configService.get<string>('app.prefix') || 'api';
+  const prefix = configService.get<string>('app.prefix');
   app.setGlobalPrefix(prefix);
 
   // 全局版本控制
