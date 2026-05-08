@@ -6,7 +6,7 @@ export default () => ({
   // 应用配置
   app: {
     port: parseInt(process.env.APP_PORT, 10) || 3000,
-    prefix: process.env.APP_PREFIX || "api",
+    prefix: process.env.APP_PREFIX || "agentflow",
     env: process.env.NODE_ENV || "development",
   },
 
