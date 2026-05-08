@@ -24,7 +24,8 @@ jobs:
       # 3. 设置日期和 SHA
       - name: Set tags
         id: tags
-        run: echo "sha=${GITHUB_SHA:0:10}" >> $GITHUB_OUTPUT && echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+        run: echo "sha=${GITHUB_SHA:0:10}" >> $GITHUB_OUTPUT && echo "date=$(date
+          +%Y%m%d)" >> $GITHUB_OUTPUT
 
       # 4. 构建并推送 Docker 镜像到阿里云 ACR
       - name: Build and push Docker image
@@ -32,7 +33,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.ALIYUN_REGISTRY_SERVER }}/${{ secrets.ALIYUN_NAMESPACE }}/agentflow:latest
+          tags: ${{ secrets.ALIYUN_REGISTRY_SERVER }}/${{ secrets.ALIYUN_NAMESPACE
+            }}/agentflow:latest
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
@@ -44,5 +46,9 @@ jobs:
             # 登录阿里云镜像仓库
             docker login --username=${{ secrets.ALIYUN_REGISTRY_USERNAME }} --password=${{ secrets.ALIYUN_REGISTRY_PASSWORD }} ${{ secrets.ALIYUN_REGISTRY_SERVER }}
             cd /docker
+            # 清理旧容器（解决你之前的名称冲突）
+            docker compose down -v --remove-orphans || true
+            # 拉取新镜像
             docker compose pull
-            docker compose up -d --force-recreate
+            # 启动新容器（保持容器名称不变）
+            docker compose up -d --force-recreate agentflow
