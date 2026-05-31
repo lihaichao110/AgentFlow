@@ -21,6 +21,7 @@ import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { Public } from "../../common/decorators/public.decorator";
+import { LoginResponseDto } from "./dto/login-response.dto";
 
 @ApiTags("User")
 @Controller({
@@ -53,20 +54,12 @@ export class UserController {
   @Post("login")
   @Public()
   @HttpCode(200)
-  @ApiOperation({ summary: "手机号验证码登录" })
+  @ApiOperation({ summary: "账号密码登录" })
   @ApiBody({ type: LoginUserDto })
   @ApiResponse({
     status: 200,
-    description: "登录成功后返回客户端 token",
-    schema: {
-      example: {
-        code: 0,
-        message: "success",
-        data: {
-          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxx.yyyyy",
-        },
-      },
-    },
+    description: "登录成功后返回 token",
+    type: LoginResponseDto,
   })
   login(@Body() loginUserDto: LoginUserDto) {
     return this.userService.login(loginUserDto);

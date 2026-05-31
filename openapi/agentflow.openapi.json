@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api": {
+    "/agentflow": {
       "get": {
         "operationId": "AppController_getServiceStatus",
         "summary": "获取服务状态页面",
@@ -24,7 +24,7 @@
         ]
       }
     },
-    "/api/demo": {
+    "/agentflow/demo": {
       "get": {
         "operationId": "DemoController_getHello",
         "summary": "Demo 手写响应示例",
@@ -47,7 +47,7 @@
         ]
       }
     },
-    "/api/v1/user": {
+    "/agentflow/v1/user": {
       "post": {
         "operationId": "UserController_create",
         "summary": "创建用户示例",
@@ -117,10 +117,10 @@
         ]
       }
     },
-    "/api/v1/user/login": {
+    "/agentflow/v1/user/login": {
       "post": {
         "operationId": "UserController_login",
-        "summary": "手机号验证码登录",
+        "summary": "账号密码登录",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -134,17 +134,11 @@
         },
         "responses": {
           "200": {
-            "description": "登录成功后返回客户端 token",
+            "description": "登录成功后返回 token",
             "content": {
               "application/json": {
                 "schema": {
-                  "example": {
-                    "code": 0,
-                    "message": "success",
-                    "data": {
-                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxx.yyyyy"
-                    }
-                  }
+                  "$ref": "#/components/schemas/LoginResponseDto"
                 }
               }
             }
@@ -155,7 +149,7 @@
         ]
       }
     },
-    "/api/v1/user/{id}": {
+    "/agentflow/v1/user/{id}": {
       "get": {
         "operationId": "UserController_findOne",
         "summary": "查询单个用户示例",
@@ -262,7 +256,7 @@
         ]
       }
     },
-    "/api/agent": {
+    "/agentflow/agent": {
       "post": {
         "operationId": "AgentController_create",
         "summary": "创建 Agent 示例",
@@ -309,7 +303,7 @@
         ]
       }
     },
-    "/api/agent/{id}": {
+    "/agentflow/agent/{id}": {
       "get": {
         "operationId": "AgentController_findOne",
         "summary": "运行单个 Agent 示例",
@@ -423,20 +417,67 @@
       "LoginUserDto": {
         "type": "object",
         "properties": {
-          "phone": {
+          "account": {
             "type": "string",
-            "description": "手机号",
-            "example": "13800138000"
+            "description": "账号",
+            "example": "admin"
           },
-          "code": {
+          "password": {
             "type": "string",
-            "description": "4 位短信验证码，当前临时验证码固定为 1234",
-            "example": "1234"
+            "description": "密码",
+            "example": "123456"
           }
         },
         "required": [
-          "phone",
-          "code"
+          "account",
+          "password"
+        ]
+      },
+      "LoginData": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "expiresIn": {
+            "type": "string",
+            "description": "过期时间",
+            "example": "7d"
+          }
+        },
+        "required": [
+          "token",
+          "expiresIn"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "description": "状态码",
+            "example": 0
+          },
+          "message": {
+            "type": "string",
+            "description": "状态信息",
+            "example": "success"
+          },
+          "data": {
+            "description": "登录数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LoginData"
+              }
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "data"
         ]
       }
     }

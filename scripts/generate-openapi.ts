@@ -1,5 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { basename } from 'path';
+import { glob } from 'glob';
 import { VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -20,6 +22,36 @@ function readPackageVersion() {
   return packageJson.version || '0.1.0';
 }
 
+async function collectExtraModels(): Promise<Function[]> {
+  const pattern = 'src/modules/*/dto/*-response.dto.ts';
+  const extraModels: Function[] = [];
+  const seen = new Set<string>();
+
+  const files = await glob(pattern, { cwd: process.cwd() });
+
+  for (const file of files) {
+    const fileName = basename(file, '.ts');
+
+    if (seen.has(fileName)) continue;
+    seen.add(fileName);
+
+    try {
+      const module = await import(`../${file}`);
+      const exportKeys = Object.keys(module);
+      for (const key of exportKeys) {
+        if (key.endsWith('ResponseDto') || key.endsWith('Response')) {
+          extraModels.push(module[key]);
+          console.log(`Registered: ${key} from ${file}`);
+        }
+      }
+    } catch (e: any) {
+      console.warn(`Failed to import ${file}: ${e.message}`);
+    }
+  }
+
+  return extraModels;
+}
+
 async function generateOpenApi() {
   const app = await NestFactory.create(AppModule, { logger: false });
   const configService = app.get(ConfigService);
@@ -30,12 +62,15 @@ async function generateOpenApi() {
     type: VersioningType.URI,
   });
 
+  const extraModels = await collectExtraModels();
+
   const document = SwaggerModule.createDocument(
     app,
     createOpenApiConfig(readPackageVersion()),
     {
       operationIdFactory: (controllerKey, methodKey) =>
         `${controllerKey}_${methodKey}`,
+      extraModels,
     },
   );
 
@@ -52,4 +87,3 @@ generateOpenApi().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-

@@ -10,4 +10,3 @@ export function createOpenApiConfig(version = '0.1.0') {
     .setVersion(version)
     .build();
 }
-
